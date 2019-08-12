@@ -4,7 +4,7 @@
   import 'package:path_provider/path_provider.dart';
   import 'dart:convert';
 
- 
+ import 'package:cloud_firestore/cloud_firestore.dart';
   
 
 
@@ -130,7 +130,119 @@ String ce(){
 
 }
 
+//  final CollectionReference cr = Firestore.instance.collection("/PlanningFormModel/LzpO3NZ3OA8aj0Stil4b");
+
+ 
+
+
+ final DocumentReference documentReference1 =
+      // Firestore.instance.document("myData/dummy");
+Firestore.instance.document("/PlanningFormModel/LzpO3NZ3OA8aj0Stil4b");
+      
+  
+    add1() { 
+      
+    Map<String, String> data = <String,String>{
+       
+      "company":this.Company,
+      "department":this.Department,
+    
+          // "department":"${pfm.Department}",
+          // "costElements":"${pfm.costElements}",
+          // "transportation" :"${pfm.ce()}",
+          // "Marketing" :"${pfm.ce()}",
+          // "Human Resources" :"${pfm.ce()}",
+          // "Information Technology" :"${pfm.ce()}",
+          // "Legal" :"${pfm.ce()}",
+       
+    
+    };
+
+
+
+   
+    documentReference1.setData(data).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+  }
+
+
+   final DocumentReference documentReference2 =
+      // Firestore.instance.document("myData/dummy");
+Firestore.instance.document("/PlanningFormModel/LzpO3NZ3OA8aj0Stil4b/ceToMpMap/4lTpdHLKxq3hOCsLLUF6/Transportation/b6Zj4gIhSDStdzBsA19x");
+   
+    add2() {
+
+          List hrList = new List();
+    List amtList= new List();
+      for (int i = 1; i < 13; i++) {
+        //assign some amount to each of the 12 months
+        amtList.add(i * 125);
+        hrList.add(i*7);
+      
+    Map<String, List> data = <String,List>{
+       
+      "amountInMonth":amtList,
+      "hrInMonth":hrList,
+       
+    
+    };
+    documentReference2.setData(data).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+  }
+   
+    }
+
+  
+
+
+
+
+
+  final DocumentReference documentReference =
+      // Firestore.instance.document("myData/dummy");
+Firestore.instance.document("/PlanningFormModel/LzpO3NZ3OA8aj0Stil4b/ceToMpMap/4lTpdHLKxq3hOCsLLUF6/It/JHsZYk6hWJALGOySe3b6");
+      
+
+
+   add3() {
+    List hrList = new List();
+    List amtList= new List();
+      for (int i = 1; i < 13; i++) {
+        //assign some amount to each of the 12 months
+        amtList.add(i * 125);
+        hrList.add(i*7);
+      
+    Map<String, List> data = <String,List>{
+       
+      "amountInMonth":amtList,
+      "hrInMonth":hrList,
+    
+          // "department":"${pfm.Department}",
+          // "costElements":"${pfm.costElements}",
+          // "transportation" :"${pfm.ce()}",
+          // "Marketing" :"${pfm.ce()}",
+          // "Human Resources" :"${pfm.ce()}",
+          // "Information Technology" :"${pfm.ce()}",
+          // "Legal" :"${pfm.ce()}",
+       
+    
+    };
+    documentReference.setData(data).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+  }
+   
+   
+   
+
 }
+
+}
+
+
+
 
 
   class MonthlyPlan{
