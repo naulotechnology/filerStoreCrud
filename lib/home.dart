@@ -17,7 +17,7 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
   final DocumentReference documentReference =
       // Firestore.instance.document("myData/dummy");
       Firestore.instance.document(
-          "/PlanningFormModel/LzpO3NZ3OA8aj0Stil4b/ceToMpMap/4lTpdHLKxq3hOCsLLUF6/It/JHsZYk6hWJALGOySe3b6");
+          "/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
 
 
 
@@ -30,9 +30,9 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
 
   
   void add(){
-    pfm.add1();
+    // pfm.add1();
     pfm.add2();
-    pfm.add3();
+    // pfm.add3();
   }
 
   @override
