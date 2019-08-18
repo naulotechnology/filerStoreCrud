@@ -17,7 +17,9 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
 
   void add(){
     // pfm.add1();
-    pfm.add2();
+    // pfm.add2();
+    pfm.savepfmToFirebasePlan();
+    pfm.savepfmToFirebaseActual();
     // pfm.add3();
   }
 
@@ -25,7 +27,7 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
     // pfm.add1();
   //print(ma.monthlyActualToList());
   // print(pfm.toStringMp());
-    // pfm.add3();
+  //  print(pfm.stringMp() ) ;
     //  print(pfm.mActual.monthlyActualToList());
    // print(pfm.mActual.monthlyActualToJson());
   }

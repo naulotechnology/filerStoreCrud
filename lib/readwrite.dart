@@ -135,6 +135,29 @@ class PlanningFormModel {
     //this.monthLevelPlan = ceToMpMap;
   }
 
+ String stringMp() {
+    String planningFormInString = "";
+      
+
+    planningFormInString = planningFormInString + "Monthly Amount Plan\n";
+    for (String ce in this.costElements) {
+      planningFormInString = planningFormInString + ce + " ";
+
+      // MonthlyPlan mp = this.ceToMpMap[ce];
+      MonthlyPlan mp = new MonthlyPlan();
+      for (PlanValue amount in mp.amountInMonth) {
+        planningFormInString = planningFormInString + amount.value.toString() + "||";
+      }
+
+      planningFormInString = planningFormInString + "\n";
+    }
+
+   
+    return planningFormInString;
+  }
+
+
+
   String toStringMp() {
     String planningFormInString = "Company = " +
         this.Company +
@@ -151,7 +174,7 @@ class PlanningFormModel {
       
 
       for (PlanValue amount in mp.amountInMonth) {
-        planningFormInString = planningFormInString + amount.toString() + "||";
+        planningFormInString = planningFormInString + amount.value.toString() + "||";
       }
 
       planningFormInString = planningFormInString + "\n";
@@ -164,7 +187,7 @@ class PlanningFormModel {
       MonthlyPlan mp = this.ceToMpMap[ce];
 
       for (PlanValue hour in mp.hourInMonth) {
-        planningFormInString = planningFormInString + hour.toString() + "||";
+        planningFormInString = planningFormInString + hour.value.toString() + "||";
       }
       planningFormInString = planningFormInString + "\n";
     }
@@ -199,7 +222,7 @@ class PlanningFormModel {
       MonthlyActual ma = this.ceToMaMap[ce];
 
       for (ActualValue hour in ma.hourInMonth) {
-        planningFormInString = planningFormInString + hour.toString() + "||";
+        planningFormInString = planningFormInString + hour.value.toString() + "||";
       }
       planningFormInString = planningFormInString + "\n";
     }
@@ -221,7 +244,7 @@ class PlanningFormModel {
       MonthlyVariance mv = this.ceToMvMap[ce];
 
       for (VarianceValue amount in mv.amountInMonth) {
-        planningFormInString = planningFormInString + amount.toString() + "||";
+        planningFormInString = planningFormInString + amount.value.toString() + "||";
       }
 
       planningFormInString = planningFormInString + "\n";
@@ -234,7 +257,7 @@ class PlanningFormModel {
       MonthlyVariance mv = this.ceToMvMap[ce];
 
       for (VarianceValue hour in mv.hourInMonth) {
-        planningFormInString = planningFormInString + hour.toString() + "||";
+        planningFormInString = planningFormInString + hour.value.toString() + "||";
       }
       planningFormInString = planningFormInString + "\n";
     }
@@ -312,8 +335,97 @@ class PlanningFormModel {
 
   savePfmToFile() {
     this.st.writeData(this.planningFormModelMvtoJSON());
+
     // this.st.writeData(this.toString());
   }
+
+
+savepfmToFirebasePlan(){
+   for (String ce in this.costElements) {
+          String a = ce;
+          final DocumentReference $a =
+          Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMpMap/ceToMpMap/$a/$a");
+          List montlyPlanHrs = new List<int>();
+          List monthlyPlanAmts= new List<int>();
+      for (int i = 1; i < 13; i++) {
+        PlanValue pm = new PlanValue(i * 125, i);
+        PlanValue ph = new PlanValue(i * 7, i);
+        monthlyPlanAmts.add(pm.value);
+        montlyPlanHrs.add(ph.value);
+      }
+      Map<String, List> data = <String,List>{
+       
+      "amountInMonth":monthlyPlanAmts,
+      "hrInMonth":montlyPlanHrs,
+       
+    };
+      
+    $a.setData(data).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+      }
+}
+
+savepfmToFirebaseActual(){
+  List montlyActualHrs = new List<int>();
+          List monthlyActualAmts= new List<int>();
+   for (String ce in this.costElements) {
+          String a = ce;
+          final DocumentReference $a =
+          Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
+          
+      for (int i = 1; i < 13; i++) {
+        ActualValue am = new ActualValue(i * 135, i);
+        ActualValue ah = new ActualValue(i * 9, i);
+        monthlyActualAmts.add(am.value);
+        montlyActualHrs.add(ah.value);
+      }
+      Map<String, List> data = <String,List>{
+       
+      "amountInMonth":monthlyActualAmts,
+      "hrInMonth":montlyActualHrs,
+       
+    };
+      
+    $a.setData(data).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+      }
+}
+
+
+// savepfmToFirebaseVariance(){
+//   PlanningFormModel pfm = new PlanningFormModel();
+   
+//     PlanValue pm = pfm.savepfmToFirebasePlan().monthlyPlamAmts;
+//     PlanValue ph = pfm.savepfmToFirebasePlan().monthlyPlamHrs;
+//      ActualValue am = pfm.savepfmToFirebaseActual().monthlyActualAmts;
+//     ActualValue ah =pfm.savepfmToFirebaseActual().montlyActualHrs;
+    
+//    for (String ce in this.costElements) {
+//           String a = ce;
+//           final DocumentReference $a =
+//           Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
+//           List montlyVarianceHrs = new List<int>();
+//           List monthlyVarianceAmts= new List<int>();
+//       for (int i = 1; i < 13; i++) {
+//         VarianceValue vm = new VarianceValue(pm-am, i);
+//         VarianceValue vh = new VarianceValue(ph-ah, i);
+//         monthlyVarianceAmts.add(vm.value);
+//         montlyVarianceHrs.add(vh.value);
+//       }
+//       Map<String, List> data = <String,List>{
+       
+//       "amountInMonth":monthlyVarianceAmts,
+//       "hrInMonth":montlyVarianceHrs,
+       
+//     };
+      
+//     $a.setData(data).whenComplete(() {
+//       print("Document Added");
+//     }).catchError((e) => print(e));
+//       }
+// }
 
   Future<String> readPfmFromFile() {
     return this.st.readData();
@@ -372,14 +484,15 @@ Firestore.instance.document("/PlanningFormModel/PlanningFormModel");
 
 
 
-final DocumentReference documentReference2 =
-      // Firestore.instance.document("myData/dummy");
-Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
+// final DocumentReference documentReference2 =
+//       // Firestore.instance.document("myData/dummy");
+// Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
    
     add2() {
-   MonthlyActual mActual;
-            int s;
-            List<DataValue> amountInMonth;
+           for (String ce in this.costElements) {
+           String a = ce;
+          final DocumentReference $a =
+          Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
     //               List hrList = new List();
     // List amtList= new List();
     //   for (int i = 1; i < 13; i++) {
@@ -396,17 +509,17 @@ Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceTo
 
 
 
-          List montlyActualHrs = new List<ActualValue>();
+          List montlyActualHrs = new List<int>();
           // montlyPlanHrs = new List<PlanValue>();
           // montlyPlanAmts = new List<PlanValue>();
-    List monthlyActualAmts= new List<ActualValue>();
+    List monthlyActualAmts= new List<int>();
       for (int i = 1; i < 13; i++) {
         //assign some amount to each of the 12 months
         ActualValue am = new ActualValue(i * 135, i);
         ActualValue ah = new ActualValue(i * 9, i);
-        monthlyActualAmts.add(am);
-        montlyActualHrs.add(ah);
-
+        monthlyActualAmts.add(am.value);
+        montlyActualHrs.add(ah.value);
+      }
       
       
     Map<String, List> data = <String,List>{
@@ -417,49 +530,51 @@ Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceTo
     
     };
       
-    documentReference2.setData(data).whenComplete(() {
+    $a.setData(data).whenComplete(() {
       print("Document Added");
     }).catchError((e) => print(e));
       
-    
-    }
+             }
+             }
 
     }
 
 
-// final DocumentReference documentReference3 =
-//       // Firestore.instance.document("myData/dummy");
-// Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
-   
-//     add3() {
-
-//           List montlyActualHrs = new List();
-//           // montlyPlanHrs = new List<PlanValue>();
-//           // montlyPlanAmts = new List<PlanValue>();
-//     List monthlyVarianceAmts= new List();
-//       for (int i = 1; i < 13; i++) {
-//         //assign some amount to each of the 12 months
-//         monthlyActualAmts.add();
-//         montlyActualHrs.add(i*9);
+ DocumentReference documentReference3 =Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMvMap/ceToMvMap/Transportation/Transportation");
+ DocumentReference documentReference =Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMvMap/ceToMvMap/Transportation/Transportation");  
+    add3() {
       
-//     Map<String, List> data = <String,List>{
+  //  List montlyActualHrs = new List<int>();
+  //         // montlyPlanHrs = new List<PlanValue>();
+  //         // montlyPlanAmts = new List<PlanValue>();
+  //   List monthlyActualAmts= new List<int>();
+  //     for (int i = 1; i < 13; i++) {
+  //       //assign some amount to each of the 12 months
+  //       ActualValue am = new ActualValue(i * 135, i);
+  //       ActualValue ah = new ActualValue(i * 9, i);
+  //       monthlyActualAmts.add(am.value);
+  //       montlyActualHrs.add(ah.value);
+  //     }
+      
+      
+  //   Map<String, List> data = <String,List>{
        
-//       "amountInMonth":monthlyVarianceAmts,
-//       "hrInMonth":montlyActualHrs,
+  //     "amountInMonth":monthlyActualAmts,
+  //     "hrInMonth":montlyActualHrs,
        
     
-//     };
+  //   };
       
-//     documentReference3.setData(data).whenComplete(() {
-//       print("Document Added");
-//     }).catchError((e) => print(e));
-  
-//       }
-//     }
+  //   documentReference2.setData(data).whenComplete(() {
+  //     print("Document Added");
+  //   }).catchError((e) => print(e));
+      
+       }
+    
 
 
 
- }
+ 
 
 class DataValue {
   int index;
@@ -532,13 +647,13 @@ class MonthlyVariance extends MonthlyValues {
       s = s + "'" + ce + "':{";
       s = s + "'amountInMonth':[";
       for (VarianceValue i in amountInMonth) {
-        s = s + "'" + i.toString() + "',";
+        s = s + "'" + i.value.toString() + "',";
       }
       s = s + "],";
 
       s = s + "'hourInMonth':[";
       for (VarianceValue i in hourInMonth) {
-        s = s + "'" + i.toString() + "',";
+        s = s + "'" + i.value.toString() + "',";
       }
       s = s + "]}},";
 
