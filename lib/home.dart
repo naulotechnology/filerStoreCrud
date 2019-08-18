@@ -13,11 +13,27 @@ class FirestoreCRUDPage extends StatefulWidget {
 class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
   // StreamSubscription<DocumentSnapshot> subscription;
   PlanningFormModel pfm = new PlanningFormModel();
+  
+
+  void add(){
+    // pfm.add1();
+    pfm.add2();
+    // pfm.add3();
+  }
+
+ void check(){
+    // pfm.add1();
+  //print(ma.monthlyActualToList());
+  // print(pfm.toStringMp());
+    // pfm.add3();
+    //  print(pfm.mActual.monthlyActualToList());
+   // print(pfm.mActual.monthlyActualToJson());
+  }
+
 
   final DocumentReference documentReference =
       // Firestore.instance.document("myData/dummy");
-      Firestore.instance.document(
-          "/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
+      Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
 
 
 
@@ -29,11 +45,7 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
   }
 
   
-  void add(){
-    // pfm.add1();
-    pfm.add2();
-    // pfm.add3();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +79,12 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
               child: new Text("Delete"),
               color: Colors.orange,
             ),
+              new RaisedButton(
+              onPressed:check,
+              child: new Text("check"),
+              color: Colors.orange,
+            ),
+            
           ],
         ),
       ),
