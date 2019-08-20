@@ -21,6 +21,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   cloud_firestore:
   path_provider:
+  connectivity: 0.4.3+7
 
 dev_dependencies:
   flutter_test:

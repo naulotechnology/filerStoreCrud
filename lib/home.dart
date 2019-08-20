@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'readwrite.dart';
+import 'display.dart';
 
 class FirestoreCRUDPage extends StatefulWidget {
   @override
@@ -26,10 +27,11 @@ class FirestoreCRUDPageState extends State<FirestoreCRUDPage> {
  void check(){
     // pfm.add1();
   //print(ma.monthlyActualToList());
-  // print(pfm.toStringMp());
+  print(pfm.toStringMp());
   //  print(pfm.stringMp() ) ;
     //  print(pfm.mActual.monthlyActualToList());
    // print(pfm.mActual.monthlyActualToJson());
+  //  print(pfm.checkInternetConnectivity());
   }
 
 
