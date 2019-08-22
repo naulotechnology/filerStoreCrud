@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 
@@ -11,7 +10,7 @@ class PlanningFormModel {
   String Department;
   List<String> costElements;
   String jpt;
-  
+  List montlyActualHrs = new List<int>();
   /*
   Cost Element to Monthly Plan map
   */
@@ -126,26 +125,8 @@ class PlanningFormModel {
     //this.monthLevelPlan = ceToMpMap;
   }
 
-  String stringMp() {
-    String planningFormInString = "";
-
-    planningFormInString = planningFormInString + "Monthly Amount Plan\n";
-    for (String ce in this.costElements) {
-      planningFormInString = planningFormInString + ce + " ";
-
-      // MonthlyPlan mp = this.ceToMpMap[ce];
-      MonthlyPlan mp = new MonthlyPlan();
-      for (PlanValue amount in mp.amountInMonth) {
-        planningFormInString =
-            planningFormInString + amount.value.toString() + "||";
-      }
-
-      planningFormInString = planningFormInString + "\n";
-    }
-
-    return planningFormInString;
-  }
-
+ 
+  
   String toStringMp() {
     String planningFormInString = "Company = " +
         this.Company +
@@ -327,118 +308,183 @@ class PlanningFormModel {
   }
 
   savePfmToFile() {
-    this.st.writeData(this.planningFormModelMvtoJSON());
+    this.st.writeJsonData(this.planningFormModelMvtoJSON());
 
     // this.st.writeData(this.toString());
   }
 
-  savepfmToFirebasePlan() {
-    for (String ce in this.costElements) {
-      String a = ce;
-      final DocumentReference $a = Firestore.instance.document(
-          "/PlanningFormModel/PlanningFormModel/ceToMpMap/ceToMpMap/$a/$a");
-      List montlyPlanHrs = new List<int>();
-      List monthlyPlanAmts = new List<int>();
-      for (int i = 1; i < 13; i++) {
-        PlanValue pm = new PlanValue(i * 125, i);
-        PlanValue ph = new PlanValue(i * 7, i);
-        monthlyPlanAmts.add(pm.value);
-        montlyPlanHrs.add(ph.value);
+  // savepfmToFirebasePlan() {
+  //   for (String ce in this.costElements) {
+  //     String a = ce;
+  //     final DocumentReference $a = Firestore.instance.document(
+  //         "/PlanningFormModel/PlanningFormModel/ceToMpMap/ceToMpMap/$a/$a");
+  //     List montlyPlanHrs = new List<int>();
+  //     List monthlyPlanAmts = new List<int>();
+  //     for (int i = 1; i < 13; i++) {
+  //       PlanValue pm = new PlanValue(i * 125, i);
+  //       PlanValue ph = new PlanValue(i * 7, i);
+  //       monthlyPlanAmts.add(pm.value);
+  //       montlyPlanHrs.add(ph.value);
+  //     }
+  //     Map<String, List> data = <String, List>{
+  //       "amountInMonth": monthlyPlanAmts,
+  //       "hrInMonth": montlyPlanHrs,
+  //     };
+
+  //     $a.setData(data).whenComplete(() {
+  //       print("Document Added");
+  //     }).catchError((e) => print(e));
+  //   }
+  // }
+
+  savepfmToFirebase() {
+     int pm , am, vm , ph , ah , vh;
+  
+  String path = "";
+  String company = "company"; // this.Company;
+  String department =  "department"  ; //this.Department;
+  String year =  "2019" ; //this.year;
+  String month =  "janaury" ; //this.month;
+  // path = "/" + company + "/" + company + "/" + department + "/" + department + "/" + year + "/" + year + "/" + month + "/" + month ;
+  path = "/" + company +  "/" + department +"/" + year +  "/"  + month ;
+    List mPHrs = new List<int>();
+    List mPAmts= new List<int>();
+    List mAHrs = new List<int>();
+    List mAAmts= new List<int>();
+    List mVHrs = new List<int>();
+    List mVAmts= new List<int>();
+   for (String ce in this.costElements) {
+          String a = ce;
+          // final DocumentReference $a =
+          // Firestore.instance.document("path/$a/plan");
+          // Firestore.instance.document("path/$a/actual");
+          // Firestore.instance.document("path/$a/varience");
+        // Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
+           final DocumentReference planDocRef= Firestore.instance.document("$path/$a/plan");
+            final DocumentReference actualDocRef = Firestore.instance.document("$path/$a/actual");
+             final DocumentReference varienceDocRef = Firestore.instance.document("$path/$a/varience");
+
+            // final DocumentReference planDocRef = Firestore.instance.document("path/$a/plan");
+            // final DocumentReference actualDocRef = Firestore.instance.document("path/$a/actual");
+            //  final DocumentReference varienceDocRef = Firestore.instance.document("path/$a/varience");
+
+         MonthlyPlan mp  = this.ceToMpMap[ce];
+            MonthlyActual ma = this.ceToMaMap[ce];
+           MonthlyVariance mv = this.ceToMvMap[ce];
+      // for (int i = 1; i < 13; i++) {
+      // //  PlanValue pm = mp.amountInMonth[i];
+         
+      //   ActualValue am = new ActualValue(i * 135, i);
+      //   ActualValue ah = new ActualValue(i * 9, i);
+      //   monthlyActualAmts.add(am.value);
+      //   montlyActualHrs.add(ah.value);
+      // }
+
+
+           for (PlanValue amount in mp.amountInMonth) {
+        pm = amount.value;
+        mPAmts.add(pm);
       }
-      Map<String, List> data = <String, List>{
-        "amountInMonth": monthlyPlanAmts,
-        "hrInMonth": montlyPlanHrs,
-      };
 
-      $a.setData(data).whenComplete(() {
-        print("Document Added");
-      }).catchError((e) => print(e));
-    }
-  }
-
-  savepfmToFirebaseActual() {
-    List montlyActualHrs = new List<int>();
-    List monthlyActualAmts = new List<int>();
-    for (String ce in this.costElements) {
-      String a = ce;
-      final DocumentReference $a = Firestore.instance.document(
-          "/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
-
-      for (int i = 1; i < 13; i++) {
-        ActualValue am = new ActualValue(i * 135, i);
-        ActualValue ah = new ActualValue(i * 9, i);
-        monthlyActualAmts.add(am.value);
-        montlyActualHrs.add(ah.value);
+        
+           for (PlanValue hour in mp.amountInMonth) {
+        ph = hour.value;
+        mPHrs.add(ph);
       }
-      Map<String, List> data = <String, List>{
-        "amountInMonth": monthlyActualAmts,
-        "hrInMonth": montlyActualHrs,
-      };
 
-      $a.setData(data).whenComplete(() {
-        print("Document Added");
-      }).catchError((e) => print(e));
-    }
+          for (ActualValue amount in ma.amountInMonth) {
+        am = amount.value;
+        mAAmts.add(am);
+      }
+
+        
+           for (ActualValue hour in ma.amountInMonth) {
+        ah = hour.value;
+        mAHrs.add(ah);
+      }
+
+    for (VarianceValue amount in mv.amountInMonth) {
+        vm = amount.value;
+        mVAmts.add(vm);
+      }
+
+        
+           for (VarianceValue hour in mv.amountInMonth) {
+        vh = hour.value;
+        mVHrs.add(vh);
+      }
+
+
+      Map<String, List> planData = <String,List>{
+       
+     "amountInMonth":mPAmts,
+     "hrInMonth": mPHrs,
+      // "amountInMonth":mp.amountInMonth,
+      // "hrInMonth":mp.hourInMonth,
+       
+    };
+
+    Map<String, List> actualData = <String,List>{
+       
+     // "amountInMonth":monthlyActualAmts,
+      // "amountInMonth":ma.amountInMonth,
+      // "hrInMonth":ma.hourInMonth,
+       "amountInMonth":mAAmts,
+        "hrInMonth": mAHrs,
+    };
+
+      Map<String, List> varienceData = <String,List>{
+       
+       "amountInMonth":mVAmts,
+        "hrInMonth": mVHrs,
+    };
+     // "amountInMonth":monthlyActualAmts,
+      // "amountInMonth":mv.amountInMonth,
+      // "hrInMonth":mv.hourInMonth,
+       
+    
+
+      //below codes saves planValue to firebase
+    planDocRef.setData(planData).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+
+    // below codes saves actualValue to firebase
+    actualDocRef.setData(actualData).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+
+ //below codes saves varienceValue to firebase
+    varienceDocRef.setData(varienceData).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+
   }
-
-// savepfmToFirebaseVariance(){
-//   PlanningFormModel pfm = new PlanningFormModel();
-
-//     PlanValue pm = pfm.savepfmToFirebasePlan().monthlyPlamAmts;
-//     PlanValue ph = pfm.savepfmToFirebasePlan().monthlyPlamHrs;
-//      ActualValue am = pfm.savepfmToFirebaseActual().monthlyActualAmts;
-//     ActualValue ah =pfm.savepfmToFirebaseActual().montlyActualHrs;
-
-//    for (String ce in this.costElements) {
-//           String a = ce;
-//           final DocumentReference $a =
-//           Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
-//           List montlyVarianceHrs = new List<int>();
-//           List monthlyVarianceAmts= new List<int>();
-//       for (int i = 1; i < 13; i++) {
-//         VarianceValue vm = new VarianceValue(pm-am, i);
-//         VarianceValue vh = new VarianceValue(ph-ah, i);
-//         monthlyVarianceAmts.add(vm.value);
-//         montlyVarianceHrs.add(vh.value);
-//       }
-//       Map<String, List> data = <String,List>{
-
-//       "amountInMonth":monthlyVarianceAmts,
-//       "hrInMonth":montlyVarianceHrs,
-
-//     };
-
-//     $a.setData(data).whenComplete(() {
-//       print("Document Added");
-//     }).catchError((e) => print(e));
-//       }
-// }
-
-  Future<String> readPfmFromFile() {
-    return this.st.readData();
-  }
-
-  checkInternetConnectivity() async {
-    var result = await Connectivity().checkConnectivity();
-    if (result == ConnectivityResult.none) {
-      print(
-        "'No internet', You're not connected to a network"
-      );
-    } else if (result == ConnectivityResult.mobile) {
-      print(
-      "  'Internet access',You're connected over mobile data"
-      );
-    } else if (result == ConnectivityResult.wifi) {
-      print(
-       " 'Internet access',You're connected over wifi"
-      );
-    }
-  }
+  
 
 
-
-
+  // Future<String> readPfmFromFile() {
+  //   return this.st.readData();
+  // }
 }
+  checkInternetConnectivity() async {
+    PlanningFormModel pfm =   PlanningFormModel();
+    var result = await Connectivity().checkConnectivity();
+    if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
+     pfm.savepfmToFirebase();
+    }
+
+    print("no internet access");
+     //pfm.savePfmToFile();
+    //  else if (result == ConnectivityResult.none) {
+    //   print(
+    //   "  ' No Internet access',You're not connected "
+    //   );
+    // } 
+  }
+}
+
+   
   // final DocumentReference documentReference1 =
   //     // Firestore.instance.document("myData/dummy");
   //     Firestore.instance.document("/PlanningFormModel/PlanningFormModel");
@@ -473,57 +519,6 @@ class PlanningFormModel {
   //     print("Document Added");
   //   }).catchError((e) => print(e));
   // }
-
-// final DocumentReference documentReference2 =
-//       // Firestore.instance.document("myData/dummy");
-// Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Transportation/Transportation");
-
-  // add2() {
-  //        for (String ce in this.costElements) {
-  //        String a = ce;
-  //       final DocumentReference $a =
-  //       Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/$a/$a");
-  //               List hrList = new List();
-  // List amtList= new List();
-  //   for (int i = 1; i < 13; i++) {
-  //     //assign some amount to each of the 12 months
-  //     amtList.add(i * 125);
-  //     hrList.add(i*7);
-  //   }
-  // Map<String, List> data = <String,List>{
-
-  //   "amountInMonth":amtList,
-  //   "hrInMonth":hrList,
-
-  // };
-
-  //       List montlyActualHrs = new List<int>();
-  //       // montlyPlanHrs = new List<PlanValue>();
-  //       // montlyPlanAmts = new List<PlanValue>();
-  // List monthlyActualAmts= new List<int>();
-  //   for (int i = 1; i < 13; i++) {
-  //     //assign some amount to each of the 12 months
-  //     ActualValue am = new ActualValue(i * 135, i);
-  //     ActualValue ah = new ActualValue(i * 9, i);
-  //     monthlyActualAmts.add(am.value);
-  //     montlyActualHrs.add(ah.value);
-  //   }
-
-  // Map<String, List> data = <String,List>{
-
-  //   "amountInMonth":monthlyActualAmts,
-  //   "hrInMonth":montlyActualHrs,
-
-  // };
-
-  // $a.setData(data).whenComplete(() {
-  //   print("Document Added");
-  // }).catchError((e) => print(e));
-
-  //          }
-  //          }
-
-
 
 //  DocumentReference documentReference3 =Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMvMap/ceToMvMap/Transportation/Transportation");
 //  DocumentReference documentReference =Firestore.instance.document("/PlanningFormModel/PlanningFormModel/ceToMvMap/ceToMvMap/Transportation/Transportation");
@@ -697,14 +692,20 @@ class Storage {
     return dir.path;
   }
 
-  Future<File> get localFile async {
+  Future<File> get localFileJson async {
     final path = await localPath;
     return File('$path/db.json');
   }
 
-  Future<String> readData() async {
+   Future<File> get localFileString async {
+    final path = await localPath;
+    return File('$path/db.txt');
+  }
+
+
+  Future<String> readJsonData() async {
     try {
-      final file = await localFile;
+      final file = await localFileJson;
       String body = await file.readAsString();
 
       return body;
@@ -713,9 +714,25 @@ class Storage {
     }
   }
 
-  Future<File> writeData(String data) async {
-    final file = await localFile;
-    return file.writeAsString("$data");
+  Future<String> readStringData() async {
+    try {
+      final file = await localFileString;
+      String body = await file.readAsString();
+
+      return body;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<File> writeJsonData(String jsonData) async {
+    final file = await localFileJson;
+    return file.writeAsString("$jsonData");
+  }
+
+  Future<File> writeStringData(String stringData) async {
+    final file = await localFileJson;
+    return file.writeAsString("$stringData");
   }
 }
 

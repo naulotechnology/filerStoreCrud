@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,14 +13,16 @@ class _ListPageState extends State<ListPage> {
   Future getPosts() async {
 
 var firestore = Firestore.instance;
-QuerySnapshot qn = await firestore.collection("/PlanningFormModel/PlanningFormModel/ceToMaMap/ceToMaMap/Information Technology/Information Technology").getDocuments();
+QuerySnapshot qn = await firestore.collection("/check/check").getDocuments();
 return qn.documents;
 
   }
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FutureBuilder(builder: (_, snapshot){
+      child: FutureBuilder(
+        future: getPosts(),
+        builder: (_,snapshot){
 
         if(snapshot.connectionState == ConnectionState.waiting){
             return Center(
@@ -30,12 +31,12 @@ return qn.documents;
             }
             else{
               return ListView.builder(
-                // itemCount: snapshot.data.length,
+               //  itemCount: snapshot.data.length,
                 itemCount: 1000,
                 // itemExtent: 300,
                 itemBuilder: (_, index){
                     return ListTile(
-                      title: Text(snapshot.data[index].data["Legal"]),
+                      title: Text(snapshot.data[index].data["department"]),
                     );
                 }
               );           
