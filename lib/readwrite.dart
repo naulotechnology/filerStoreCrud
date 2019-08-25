@@ -6,8 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 
 class PlanningFormModel {
-  String Company;
-  String Department;
+  String company;
+  String department;
   List<String> costElements;
   String jpt;
   List montlyActualHrs = new List<int>();
@@ -37,8 +37,8 @@ class PlanningFormModel {
   Storage st;
 
   PlanningFormModel() {
-    this.Company = "N Tech";
-    this.Department = "Marketing";
+    this.company = "N Tech";
+    this.department = "Marketing";
     this.st = new Storage();
     this.costElements = new List<String>();
     //mPlan = new MonthlyPlan(this);
@@ -128,11 +128,11 @@ class PlanningFormModel {
  
   
   String toStringMp() {
-    String planningFormInString = "Company = " +
-        this.Company +
+    String planningFormInString = "company = " +
+        this.company +
         "\n" +
-        "DepartMent = " +
-        this.Department +
+        "department = " +
+        this.department +
         "\n";
 
     planningFormInString = planningFormInString + "Monthly Amount Plan\n";
@@ -165,11 +165,11 @@ class PlanningFormModel {
   }
 
   String toStringMa() {
-    String planningFormInString = "Company = " +
-        this.Company +
+    String planningFormInString = "company = " +
+        this.company +
         "\n" +
-        "DepartMent = " +
-        this.Department +
+        "department = " +
+        this.department +
         "\n";
 
     planningFormInString = planningFormInString + "Monthly Amount Plan\n";
@@ -202,11 +202,11 @@ class PlanningFormModel {
   }
 
   String toStringMv() {
-    String planningFormInString = "Company = " +
-        this.Company +
+    String planningFormInString = "company = " +
+        this.company +
         "\n" +
-        "DepartMent = " +
-        this.Department +
+        "department = " +
+        this.department +
         "\n";
 
     planningFormInString = planningFormInString + "Monthly Amount Plan\n";
@@ -250,8 +250,8 @@ class PlanningFormModel {
   String planningFormModelMptoJSON() {
     String p = "";
     p = p + "{";
-    p = p + "'Company':" + "'${this.Company}'" + ",";
-    p = p + "'Department':" + "'${this.Department}'" + ",";
+    p = p + "'company':" + "'${this.company}'" + ",";
+    p = p + "'department':" + "'${this.department}'" + ",";
     p = p + "'costElements':[";
     for (String ce in this.costElements) {
       p = p + "'" + ce + "',";
@@ -270,8 +270,8 @@ class PlanningFormModel {
   String planningFormModelMatoJSON() {
     String p = "";
     p = p + "{";
-    p = p + "'Company':" + "'${this.Company}'" + ",";
-    p = p + "'Department':" + "'${this.Department}'" + ",";
+    p = p + "'company':" + "'${this.company}'" + ",";
+    p = p + "'department':" + "'${this.department}'" + ",";
     p = p + "'costElements':[";
     for (String ce in this.costElements) {
       p = p + "'" + ce + "',";
@@ -290,8 +290,8 @@ class PlanningFormModel {
   String planningFormModelMvtoJSON() {
     String p = "";
     p = p + "{";
-    p = p + "'Company':" + "'${this.Company}'" + ",";
-    p = p + "'Department':" + "'${this.Department}'" + ",";
+    p = p + "'company':" + "'${this.company}'" + ",";
+    p = p + "'department':" + "'${this.department}'" + ",";
     p = p + "'costElements':[";
     for (String ce in this.costElements) {
       p = p + "'" + ce + "',";
@@ -341,8 +341,8 @@ class PlanningFormModel {
      int pm , am, vm , ph , ah , vh;
   
   String path = "";
-  String company = "company"; // this.Company;
-  String department =  "department"  ; //this.Department;
+  String company = "company"; // this.company;
+  String department =  "department"  ; //this.department;
   String year =  "2019" ; //this.year;
   String month =  "janaury" ; //this.month;
   // path = "/" + company + "/" + company + "/" + department + "/" + department + "/" + year + "/" + year + "/" + month + "/" + month ;
@@ -498,8 +498,8 @@ class PlanningFormModel {
     //     hrList.add(i*7);
 
     // Map<String, String> data = <String, String>{
-    //   "Company": "N tech",
-    //   "Department": "my",
+    //   "company": "N tech",
+    //   "department": "my",
 
       //       List montlyPlanHrs = new List();
       //       // montlyPlanHrs = new List<PlanValue>();
@@ -737,8 +737,8 @@ class Storage {
 }
 
 //    class PlanningFormModel {
-//   String Company;
-//   String Department;
+//   String company;
+//   String department;
 //   List<String> costElements;
 //   Map<String, MonthlyPlan> ceToMpMap;
 //   List<int> amtList;
@@ -750,8 +750,8 @@ class Storage {
 //   String allCatagory;
 
 //   PlanningFormModel() {
-//     this.Company = "N Tech";
-//     this.Department = "Marketing";
+//     this.company = "N Tech";
+//     this.department = "Marketing";
 //     this.costElements = new List<String>();
 
 //     this.costElements.add("Transportation");
@@ -794,11 +794,11 @@ class Storage {
 //   }
 
 //   String toString() {
-//     String planningFormInString = "Company = " +
-//         this.Company +
+//     String planningFormInString = "company = " +
+//         this.company +
 //         "\n" +
-//         "DepartMent = " +
-//         this.Department +
+//         "department = " +
+//         this.department +
 //         "\n";
 
 //     planningFormInString = planningFormInString + "Monthly Amount Plan\n";
@@ -831,8 +831,8 @@ class Storage {
 //  String PlanningFormModeltoJsonv2() {
 //     String p = "";
 //     p = p + "{";
-//     p = p + "'Company':" + "'${this.Company}'" + ",";
-//     p = p + "'Department':" + "'${this.Department}'" + ",";
+//     p = p + "'company':" + "'${this.company}'" + ",";
+//     p = p + "'department':" + "'${this.department}'" + ",";
 //     p = p + "'costElements':[";
 //     for (String ce in this.costElements) {
 //       p = p + "'" + ce + "',";
@@ -867,10 +867,10 @@ class Storage {
 
 //     Map<String, String> data = <String,String>{
 
-//       "company":this.Company,
-//       "department":this.Department,
+//       "company":this.company,
+//       "department":this.department,
 
-//           // "department":"${pfm.Department}",
+//           // "department":"${pfm.department}",
 //           // "costElements":"${pfm.costElements}",
 //           // "transportation" :"${pfm.ce()}",
 //           // "Marketing" :"${pfm.ce()}",
@@ -928,7 +928,7 @@ class Storage {
 //       "amountInMonth":amtList,
 //       "hrInMonth":hrList,
 
-//           // "department":"${pfm.Department}",
+//           // "department":"${pfm.department}",
 //           // "costElements":"${pfm.costElements}",
 //           // "transportation" :"${pfm.ce()}",
 //           // "Marketing" :"${pfm.ce()}",
