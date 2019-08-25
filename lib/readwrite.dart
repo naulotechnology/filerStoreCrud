@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,8 +8,8 @@ class PlanningFormModel {
   String company;
   String department;
   List<String> costElements;
-  String jpt;
-  List montlyActualHrs = new List<int>();
+  String year;
+ String month;
   /*
   Cost Element to Monthly Plan map
   */
@@ -20,26 +19,46 @@ class PlanningFormModel {
   Cost Element to Monthly Actuals map
   */
   Map<String, MonthlyActual> ceToMaMap;
-
+  
   /*
   Cost Element to Monthly Variance map
   */
   Map<String, MonthlyVariance> ceToMvMap;
-
+  
   /*
   *This string is to hold current state of the App read from Storage
   */
-  String savedStateFromFile = "This is default";
+  String savedStateFromFile="This is default";
 
   /*
   *Storge class does the file/cloudstore/db read/write
   */
-  Storage st;
+  Storage st ;
+  
 
   PlanningFormModel() {
-    this.company = "N Tech";
-    this.department = "Marketing";
+    //check if data files already exists 
+
+    this.initializeData();
     this.st = new Storage();
+
+    // if(st.readData().toString()==""){
+    //    this.initializeData();
+     
+    // }
+    // else {
+    //   print("data in local file system is available , reading json and populating  data... "); 
+    //   //read json from file 
+    //   //populate data 
+    //   this.planningFormModelJSONtoMp();
+    // }
+  }
+
+    initializeData(){
+      this.company = "N Tech";
+    this.department = "Marketing";
+     
+     this.year = "2019";
     this.costElements = new List<String>();
     //mPlan = new MonthlyPlan(this);
 
@@ -48,27 +67,32 @@ class PlanningFormModel {
     this.costElements.add("Human Resources");
     this.costElements.add("Information Technology");
     this.costElements.add("Legal");
+    this.costElements.add("Transportation");
+    this.costElements.add("Marketing");
+    this.costElements.add("Human Resources");
 
-    //instatiate the map to store monthly plan for each costEleemnts
+
+ //instatiate the map to store monthly plan for each costEleemnts
     ceToMpMap = new Map<String, MonthlyPlan>();
     ceToMaMap = new Map<String, MonthlyActual>();
     ceToMvMap = new Map<String, MonthlyVariance>();
 
-    MonthlyPlan mPlan;
-    MonthlyActual mActual;
-    MonthlyVariance mVariance;
+    
+    MonthlyPlan mPlan; MonthlyActual mActual; MonthlyVariance mVariance;
     List<DataValue> monthlyActualAmts, montlyPlanAmts, monthlyVarianceAmts;
     List<DataValue> monthlyActualHrs, montlyPlanHrs, monthlyVarianceHrs;
 
+    
     for (String ce in this.costElements) {
+
       mPlan = new MonthlyPlan();
       mActual = new MonthlyActual();
       mVariance = new MonthlyVariance();
-
+    
       mPlan.category = ce;
       mActual.category = ce;
       mVariance.category = ce;
-
+    
       monthlyActualAmts = new List<ActualValue>();
       montlyPlanAmts = new List<PlanValue>();
       monthlyVarianceAmts = new List<VarianceValue>();
@@ -77,19 +101,19 @@ class PlanningFormModel {
       montlyPlanHrs = new List<PlanValue>();
       monthlyVarianceHrs = new List<VarianceValue>();
 
+
       for (int i = 0; i < 12; i++) {
-        
         //assign plan amounts to each of the 12 months
-        PlanValue pv = new PlanValue(i * 125, i);
+        PlanValue pv = new PlanValue(i * 0, i);
         //assign plan amounts to each of the 12 months
-        ActualValue av = new ActualValue(i * 135, i);
+        ActualValue av = new ActualValue(i * 0, i);
         //Variance the difference between plan = actual
         VarianceValue vv = new VarianceValue(pv.value - av.value, i);
 
         //assign plan Hours to each of the 12 months
-        PlanValue ph = new PlanValue(i * 7, i);
+        PlanValue ph = new PlanValue(i * 0, i);
         //assign plan Hours to each of the 12 months
-        ActualValue ah = new ActualValue(i * 9, i);
+        ActualValue ah = new ActualValue(i * 0, i);
         //Variance the difference between plan = actual
         VarianceValue vh = new VarianceValue(ph.value - ah.value, i);
 
@@ -118,9 +142,7 @@ class PlanningFormModel {
       this.ceToMpMap[ce] = mPlan;
       this.ceToMaMap[ce] = mActual;
       this.ceToMvMap[ce] = mVariance;
-      
     }
-
     //assign month plan
     //this.monthLevelPlan = ceToMpMap;
   }
@@ -306,6 +328,36 @@ class PlanningFormModel {
     p = json.encode(p);
     return p;
   }
+
+    MonthlyPlan  planningFormModelJSONtoMp(){
+
+      MonthlyPlan mp = new MonthlyPlan();
+      //readJsonString and build monthlyPlan object mp
+      //
+      return mp ;
+
+  }
+
+ MonthlyActual  planningFormModelJSONtoMa(){
+
+      MonthlyActual ma = new MonthlyActual();
+      //readJsonString and build monthlyActual object ma
+      //
+      return ma ;
+
+  }
+
+
+
+ MonthlyVariance  planningFormModelJSONtoMv(){
+
+      MonthlyVariance mv = new MonthlyVariance();
+      //readJsonString and build monthlyVarience object mv
+      //
+      return mv ;
+
+  }
+
 
   savePfmToFile() {
     this.st.writeJsonData(this.planningFormModelMvtoJSON());
